@@ -23,12 +23,12 @@ si_unit_pandas
 	* - Activity
 	  - |commits-latest| |commits-since| |maintained|
 	* - QA
-	  - |codefactor| |actions_flake8| |actions_mypy| |pre_commit_ci|
+	  - |codefactor| |actions_flake8| |actions_mypy|
 	* - Other
 	  - |license| |language| |requires|
 
-.. |docs| image:: https://img.shields.io/readthedocs/si_unit_pandas/latest?logo=read-the-docs
-	:target: https://si_unit_pandas.readthedocs.io/en/latest
+.. |docs| image:: https://img.shields.io/readthedocs/si-unit-pandas/latest?logo=read-the-docs
+	:target: https://si-unit-pandas.readthedocs.io/en/latest
 	:alt: Documentation Build Status
 
 .. |docs_check| image:: https://github.com/domdfcoding/si_unit_pandas/workflows/Docs%20Check/badge.svg
@@ -55,8 +55,8 @@ si_unit_pandas
 	:target: https://github.com/domdfcoding/si_unit_pandas/actions?query=workflow%3A%22mypy%22
 	:alt: mypy status
 
-.. |requires| image:: https://requires.io/github/domdfcoding/si_unit_pandas/requirements.svg?branch=master
-	:target: https://requires.io/github/domdfcoding/si_unit_pandas/requirements/?branch=master
+.. |requires| image:: https://dependency-dash.repo-helper.uk/github/domdfcoding/si_unit_pandas/badge.svg
+	:target: https://dependency-dash.repo-helper.uk/github/domdfcoding/si_unit_pandas/
 	:alt: Requirements Status
 
 .. |coveralls| image:: https://img.shields.io/coveralls/github/domdfcoding/si_unit_pandas/master?logo=coveralls
@@ -82,12 +82,8 @@ si_unit_pandas
 	:target: https://github.com/domdfcoding/si_unit_pandas/commit/master
 	:alt: GitHub last commit
 
-.. |maintained| image:: https://img.shields.io/maintenance/yes/2021
+.. |maintained| image:: https://img.shields.io/maintenance/yes/2024
 	:alt: Maintenance
-
-.. |pre_commit_ci| image:: https://results.pre-commit.ci/badge/github/domdfcoding/si_unit_pandas/master.svg
-	:target: https://results.pre-commit.ci/latest/github/domdfcoding/si_unit_pandas/master
-	:alt: pre-commit.ci status
 
 .. end shields
 
