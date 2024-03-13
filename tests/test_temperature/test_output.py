@@ -1,6 +1,6 @@
 # 3rd party
 import pandas  # type: ignore
-from domdf_python_tools.testing import check_file_regression
+from coincidence import check_file_regression
 from pandas._testing import assert_frame_equal  # type: ignore
 from pytest_regressions.file_regression import FileRegressionFixture
 

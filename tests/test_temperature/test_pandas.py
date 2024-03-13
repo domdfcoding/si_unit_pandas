@@ -2,7 +2,7 @@
 import numpy  # type: ignore
 import pandas  # type: ignore
 import pandas.testing as tm  # type: ignore
-from domdf_python_tools.testing import not_windows
+from coincidence.selectors import not_windows
 from hypothesis import given
 from hypothesis.strategies import integers, lists
 from pandas._testing import assert_numpy_array_equal  # type: ignore
