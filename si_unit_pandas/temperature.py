@@ -82,7 +82,7 @@ class Celsius(UserFloat):
 	:class:`float` subclass representing a temperature in Celsius.
 	"""
 
-	def __init__(self, value):
+	def __init__(self, value: Any):
 		if isinstance(value, str):
 			value = re.split("[ ℃°C]", value)[0]
 
@@ -270,7 +270,7 @@ class TemperatureArray(BaseArray):
 
 		super().append(value)
 
-	def astype(self, dtype, copy=True):
+	def astype(self, dtype, copy: bool = True):
 		"""
 		Returns the array with its values as the given dtype.
 
@@ -296,7 +296,7 @@ class TemperatureArray(BaseArray):
 		"""
 
 		if isinstance(other, (str, float)) or not isinstance(other, (self.__class__, Sequence)):
-			other = [other]  # type: ignore
+			other = [other]
 
 		temperatures = []
 

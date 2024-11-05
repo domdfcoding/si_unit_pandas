@@ -89,7 +89,7 @@ def test_setitem_scalar():
 
 
 @given(lists(integers(min_value=1, max_value=2**128 - 1)))
-def test_argsort(ints):
+def test_argsort(ints: int):
 	pass
 	# result = pandas.Series(si_unit_pandas.TemperatureArray(ints)).argsort()
 	# expected = pandas.Series(ints).argsort()

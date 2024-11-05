@@ -1,5 +1,6 @@
 # stdlib
 import operator
+from typing import Any, Callable, List, Tuple
 
 # 3rd party
 import numpy  # type: ignore
@@ -17,7 +18,7 @@ from si_unit_pandas.temperature import Celsius
 
 
 @pytest.mark.parametrize("values", [62, "62", "62.0"])
-def test_to_temperature(values):
+def test_to_temperature(values: Any):
 	result = to_temperature(values)
 	expected = TemperatureArray([62.0])
 	assert result.equals(expected)
@@ -99,7 +100,7 @@ def test_equality():
 		operator.ge,
 		operator.gt,
 		])
-def test_comparison_raises(op):
+def test_comparison_raises(op: Callable):
 	arr = si_unit_pandas.TemperatureArray([0, 1, 2])
 	with pytest.raises(TypeError):
 		op(arr, 'a')
@@ -121,7 +122,7 @@ def test_comparison_raises(op):
 @example((1, 2))
 @example((2, 1))
 # @pytest.mark.skip(reason="Flaky")
-def test_ops(tup):
+def test_ops(tup: Tuple[int, int]):
 	a, b = tup
 	v1 = si_unit_pandas.TemperatureArray(a)
 	v2 = si_unit_pandas.TemperatureArray(b)
@@ -205,7 +206,7 @@ def test_factorize():
 
 
 @pytest.mark.parametrize("values", [[0, 1, 2]])
-def test_from_ndarray(values):
+def test_from_ndarray(values: List[int]):
 	result = si_unit_pandas.TemperatureArray(numpy.asarray(values))
 	expected = si_unit_pandas.TemperatureArray(values)
 	assert result.equals(expected)

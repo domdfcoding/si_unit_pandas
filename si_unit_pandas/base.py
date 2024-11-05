@@ -45,7 +45,7 @@ Base functionality.
 # stdlib
 from abc import abstractmethod
 from numbers import Real
-from typing import Dict, Iterable, List, Optional, Sequence, SupportsFloat, Tuple, Type, TypeVar, Union, overload
+from typing import Any, Iterable, List, Optional, Sequence, SupportsFloat, Tuple, Type, TypeVar, Union, overload
 
 # 3rd party
 import numpy  # type: ignore
@@ -66,7 +66,7 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 	_dtype: Type[ExtensionDtype]
 
 	@property
-	def dtype(self):
+	def dtype(self) -> Type[ExtensionDtype]:
 		"""
 		The dtype for this extension array, :class:`~.CelsiusType`.
 		"""
@@ -74,7 +74,7 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 		return self._dtype
 
 	@classmethod
-	def _from_sequence(cls, scalars: Iterable, dtype=None, copy: bool = False):
+	def _from_sequence(cls, scalars: Iterable, dtype: Optional[Type[ExtensionDtype]] = None, copy: bool = False):
 		"""
 		Construct a new ExtensionArray from a sequence of scalars.
 
@@ -118,7 +118,7 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 
 		return len(self.data)
 
-	def setitem(self, indexer, value):
+	def setitem(self, indexer, value: Any):
 		"""
 		Set the 'value' inplace.
 		"""
@@ -230,7 +230,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 		return new
 
 	@property
-	def na_value(self):
+	def na_value(self) -> Any:
 		"""
 		The missing value.
 
@@ -244,7 +244,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 
 		return self.dtype.na_value
 
-	def take(self, indices, allow_fill: bool = False, fill_value=None):
+	def take(self, indices, allow_fill: bool = False, fill_value: Any = None):
 		# Can't use pandas' take yet
 		# 1. axis
 		# 2. I don't know how to do the reshaping correctly.
@@ -287,7 +287,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 		formatted = self._format_values()
 		return f"{self.__class__.__name__}({formatted!r})"
 
-	def isna(self):
+	def isna(self) -> Sequence[bool]:
 		"""
 		Indicator for whether each element is missing.
 		"""
@@ -298,7 +298,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 			return self.data == self.na_value
 
 	# From https://github.com/scikit-hep/awkward-array/blob/2bbdb68d7a4fff2eeaed81eb76195e59232e8c13/awkward/array/base.py#L611
-	def _isstringslice(self, where):
+	def _isstringslice(self, where: Any) -> bool:
 		if isinstance(where, str):
 			return True
 		elif isinstance(where, bytes):
@@ -324,7 +324,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 		else:
 			return True
 
-	def __delitem__(self, where):
+	def __delitem__(self, where) -> None:
 		if isinstance(where, str):
 			del self.data[where]
 		elif self._isstringslice(where):
@@ -347,8 +347,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 
 		self.data = numpy.append(self.data, self._parser(value).data)
 
-	def __setitem__(self, key, value):
-
+	def __setitem__(self, key: Any, value: Any) -> None:
 		value = self._parser(value).data
 		self.data[key] = value
 
@@ -442,10 +441,10 @@ class UserFloat(Real):
 		return float(self).__trunc__()
 
 	@overload
-	def __round__(self, ndigits: int) -> float: ...
+	def __round__(self, ndigits: None = ...) -> int: ...
 
 	@overload
-	def __round__(self, ndigits: None = ...) -> int: ...
+	def __round__(self, ndigits: int) -> float: ...
 
 	def __round__(self, ndigits: Optional[int] = None) -> Union[int, float]:
 		return float(self).__round__(ndigits)
@@ -510,8 +509,8 @@ class UserFloat(Real):
 	def __repr__(self) -> str:
 		return str(self)
 
-	def __ceil__(self):
+	def __ceil__(self) -> int:
 		raise NotImplementedError
 
-	def __floor__(self):
+	def __floor__(self) -> int:
 		raise NotImplementedError

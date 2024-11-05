@@ -6,18 +6,19 @@ import numpy  # type: ignore
 import pandas  # type: ignore
 import pandas.testing as tm  # type: ignore
 import pytest
+from pandas.core.generic import NDFrame  # type: ignore[import]
 
 # this package
 import si_unit_pandas
 
 
 @pytest.fixture()
-def series():
+def series() -> pandas.Series:
 	return pandas.Series(si_unit_pandas.TemperatureArray([0, 1, 2]))
 
 
 @pytest.fixture()
-def frame():
+def frame() -> pandas.DataFrame:
 	return pandas.DataFrame({
 			'A': si_unit_pandas.TemperatureArray([0, 1, 2]),
 			'B': [0, 1, 2],
@@ -26,7 +27,7 @@ def frame():
 
 
 @pytest.fixture(params=["series", "frame"])
-def obj(request, series, frame):
+def obj(request, series: pandas.Series, frame: pandas.DataFrame) -> NDFrame:
 	if request.param == "series":
 		return series
 	elif request.param == "frame":
@@ -40,29 +41,27 @@ def obj(request, series, frame):
 		operator.methodcaller("head"),
 		operator.methodcaller("rename", str),
 		])
-def test_works_generic(obj, method):
+def test_works_generic(obj, method: operator.methodcaller):
 	method(obj)
 
 
-@pytest.mark.parametrize("method", [
-		operator.methodcaller("info"),
-		])
-def test_works_frame(frame, method):
+@pytest.mark.parametrize("method", [operator.methodcaller("info")])
+def test_works_frame(frame: pandas.DataFrame, method: operator.methodcaller):
 	method(frame)
 
 
-def test__take(frame):
+def test__take(frame: pandas.DataFrame):
 	return frame.take([0], axis=0)
 
 
-def test_iloc_series(series):
+def test_iloc_series(series: pandas.Series):
 	series.iloc[slice(None)]
 	series.iloc[0]
 	series.iloc[[0]]
 	series.iloc[[0, 1]]
 
 
-def test_iloc_frame(frame):
+def test_iloc_frame(frame: pandas.DataFrame):
 	frame.iloc[:, 0]
 	frame.iloc[:, [0]]
 	frame.iloc[:, [0, 1]]
@@ -79,14 +78,14 @@ def test_iloc_frame(frame):
 	frame.iloc[[0], [0, 2]]
 
 
-def test_loc_series(series):
+def test_loc_series(series: pandas.Series):
 	series.loc[:]
 	series.loc[0]
 	series.loc[1]
 	series.loc[[0, 1]]
 
 
-def test_loc_frame(frame):
+def test_loc_frame(frame: pandas.DataFrame):
 	frame.loc[:, 'A']
 	frame.loc[:, ['A']]
 	frame.loc[:, ['A', 'B']]
@@ -103,7 +102,7 @@ def test_loc_frame(frame):
 	frame.loc[[0], ['A', 'C']]
 
 
-def test_reindex(frame):
+def test_reindex(frame: pandas.DataFrame):
 	result = frame.reindex([0, 10])
 	expected = pandas.DataFrame({
 			'A': si_unit_pandas.TemperatureArray([0, numpy.nan]),
@@ -114,7 +113,7 @@ def test_reindex(frame):
 	tm.assert_frame_equal(result, expected)
 
 
-def test_isna(series):
+def test_isna(series: pandas.Series):
 	expected = pandas.Series([False, False, False], index=series.index, name=series.name)
 	result = pandas.isna(series)
 	tm.assert_series_equal(result, expected)
@@ -123,7 +122,7 @@ def test_isna(series):
 	tm.assert_series_equal(result, expected)
 
 
-def test_isna_frame(frame):
+def test_isna_frame(frame: pandas.DataFrame):
 	result = frame.isna()
 	expected = pandas.DataFrame({
 			'A': [False, False, False],
