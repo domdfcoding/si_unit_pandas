@@ -192,7 +192,6 @@ def test_astype():
 
 	arr = TemperatureArray([1, 2, 3, 4, 5]).astype(int)
 	assert isinstance(arr, numpy.ndarray)
-	assert arr.dtype == numpy.dtype(numpy.int)
 	assert arr.dtype == numpy.dtype(int)
 
 

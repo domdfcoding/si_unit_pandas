@@ -137,7 +137,7 @@ class CelsiusType(ExtensionDtype):
 	name: str = "celsius"
 	type: Type = TemperatureBase  # noqa: A003  # pylint: disable=redefined-builtin
 	kind: str = 'O'
-	_record_type: Type = numpy.float
+	_record_type: Type = float
 
 	@classmethod
 	def construct_from_string(cls, string):
