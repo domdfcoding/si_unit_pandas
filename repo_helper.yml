@@ -9,6 +9,7 @@ short_desc: 'Custom Pandas dtypes for values with SI units.'
 
 enable_conda: False
 on_pypi: False
+min_coverage: 60
 
 python_deploy_version: 3.6
 
