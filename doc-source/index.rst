@@ -135,6 +135,7 @@ Example
 	API Reference<docs>
 	contributing
 	Source
+	license
 
 .. sidebar-links::
 	:caption: Links
