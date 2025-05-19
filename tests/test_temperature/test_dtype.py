@@ -1,5 +1,5 @@
 # 3rd party
-import numpy  # type: ignore
+import numpy
 import pytest
 
 # this package

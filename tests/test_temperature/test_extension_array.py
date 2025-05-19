@@ -2,7 +2,7 @@
 from typing import Sequence
 
 # 3rd party
-import numpy  # type: ignore
+import numpy
 import pytest
 
 # this package
@@ -63,9 +63,11 @@ def test_temperature_array_from_sequence(seq: Sequence):
 
 @pytest.mark.parametrize("seq", _non_empty_arrays)
 def test_temperature_array_from_ndarray(seq: Sequence):
-	assert numpy.all(TemperatureArray._from_ndarray(seq) == TemperatureArray(list(seq)))
-	assert numpy.all(TemperatureArray._from_ndarray(seq, copy=False) == TemperatureArray(list(seq)))
-	assert numpy.all(TemperatureArray._from_ndarray(seq, copy=True) == TemperatureArray(list(seq)))
+	assert numpy.all(TemperatureArray._from_ndarray(seq) == TemperatureArray(list(seq)))  # type: ignore[arg-type]
+	from_array_no_copy = TemperatureArray._from_ndarray(seq, copy=False)  # type: ignore[arg-type]
+	assert numpy.all(from_array_no_copy == TemperatureArray(list(seq)))
+	from_array_copy = TemperatureArray._from_ndarray(seq, copy=True)  # type: ignore[arg-type]
+	assert numpy.all(from_array_copy == TemperatureArray(list(seq)))
 
 
 @pytest.mark.parametrize("seq", [*_non_empty_sets, *_non_empty_lists, *_non_empty_tuples, *_non_empty_arrays])
@@ -140,9 +142,9 @@ def test_init_copy():
 
 
 def test_eq():
-	assert numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) == TemperatureArray([1, 2, 3, 4, 5]))
-	assert not numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) == TemperatureArray([2, 3, 4, 5, 6]))
-	assert not numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) == TemperatureArray([0, 1, 2, 3, 4]))
+	assert numpy.all(TemperatureArray([1, 2, 3, 4, 5]) == TemperatureArray([1, 2, 3, 4, 5]))
+	assert not numpy.all(TemperatureArray([1, 2, 3, 4, 5]) == TemperatureArray([2, 3, 4, 5, 6]))
+	assert not numpy.all(TemperatureArray([1, 2, 3, 4, 5]) == TemperatureArray([0, 1, 2, 3, 4]))
 
 
 def test_equals():
@@ -164,27 +166,27 @@ def test_equals():
 
 
 def test_le():
-	assert numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) <= TemperatureArray([1, 2, 3, 4, 5]))
-	assert numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) <= TemperatureArray([2, 3, 4, 5, 6]))
-	assert not numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) <= TemperatureArray([0, 1, 2, 3, 4]))
+	assert numpy.all(TemperatureArray([1, 2, 3, 4, 5]) <= TemperatureArray([1, 2, 3, 4, 5]))
+	assert numpy.all(TemperatureArray([1, 2, 3, 4, 5]) <= TemperatureArray([2, 3, 4, 5, 6]))
+	assert not numpy.all(TemperatureArray([1, 2, 3, 4, 5]) <= TemperatureArray([0, 1, 2, 3, 4]))
 
 
 def test_ge():
-	assert numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) >= TemperatureArray([1, 2, 3, 4, 5]))
-	assert numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) >= TemperatureArray([0, 1, 2, 3, 4]))
-	assert not numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) >= TemperatureArray([2, 3, 4, 5, 6]))
+	assert numpy.all(TemperatureArray([1, 2, 3, 4, 5]) >= TemperatureArray([1, 2, 3, 4, 5]))
+	assert numpy.all(TemperatureArray([1, 2, 3, 4, 5]) >= TemperatureArray([0, 1, 2, 3, 4]))
+	assert not numpy.all(TemperatureArray([1, 2, 3, 4, 5]) >= TemperatureArray([2, 3, 4, 5, 6]))
 
 
 def test_lt():
-	assert not numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) < TemperatureArray([1, 2, 3, 4, 5]))
-	assert numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) < TemperatureArray([2, 3, 4, 5, 6]))
-	assert not numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) < TemperatureArray([0, 1, 2, 3, 4]))
+	assert not numpy.all(TemperatureArray([1, 2, 3, 4, 5]) < TemperatureArray([1, 2, 3, 4, 5]))
+	assert numpy.all(TemperatureArray([1, 2, 3, 4, 5]) < TemperatureArray([2, 3, 4, 5, 6]))
+	assert not numpy.all(TemperatureArray([1, 2, 3, 4, 5]) < TemperatureArray([0, 1, 2, 3, 4]))
 
 
 def test_gt():
-	assert not numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) > TemperatureArray([1, 2, 3, 4, 5]))
-	assert numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) > TemperatureArray([0, 1, 2, 3, 4]))
-	assert not numpy.alltrue(TemperatureArray([1, 2, 3, 4, 5]) > TemperatureArray([2, 3, 4, 5, 6]))
+	assert not numpy.all(TemperatureArray([1, 2, 3, 4, 5]) > TemperatureArray([1, 2, 3, 4, 5]))
+	assert numpy.all(TemperatureArray([1, 2, 3, 4, 5]) > TemperatureArray([0, 1, 2, 3, 4]))
+	assert not numpy.all(TemperatureArray([1, 2, 3, 4, 5]) > TemperatureArray([2, 3, 4, 5, 6]))
 
 
 def test_astype():

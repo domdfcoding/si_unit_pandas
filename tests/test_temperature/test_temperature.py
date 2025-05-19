@@ -3,8 +3,8 @@ import operator
 from typing import Any, Callable, List, Tuple
 
 # 3rd party
-import numpy  # type: ignore
-import numpy.testing as npt  # type: ignore
+import numpy
+import numpy.testing as npt
 import pandas  # type: ignore
 import pytest
 from hypothesis import example, given
@@ -34,7 +34,7 @@ def test_to_temperature_scalar():
 	result = to_temperature(1)
 	expected = to_temperature([1])
 	assert len(result) == 1
-	assert all(result == expected)  # type: ignore
+	assert all(result == expected)
 
 
 def test_make_container():

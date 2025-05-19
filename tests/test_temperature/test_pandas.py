@@ -1,5 +1,5 @@
 # 3rd party
-import numpy  # type: ignore
+import numpy
 import pandas  # type: ignore
 import pandas.testing as tm  # type: ignore
 from coincidence.selectors import not_windows

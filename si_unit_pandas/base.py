@@ -48,7 +48,7 @@ from numbers import Real
 from typing import Any, Iterable, List, Optional, Sequence, SupportsFloat, Tuple, Type, TypeVar, Union, overload
 
 # 3rd party
-import numpy  # type: ignore
+import numpy
 from domdf_python_tools.doctools import prettify_docstrings
 from pandas.core.arrays import ExtensionArray  # type: ignore
 from pandas.core.dtypes.base import ExtensionDtype  # type: ignore
@@ -293,7 +293,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 		"""
 
 		if numpy.isnan(self.na_value):
-			return numpy.isnan(self.data)
+			return numpy.isnan(self.data)  # type: ignore[return-value]
 		else:
 			return self.data == self.na_value
 
@@ -307,12 +307,12 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 			return False
 		elif (
 				isinstance(where, (numpy.ndarray, self.__class__))
-				and issubclass(where.dtype.type, (numpy.str, numpy.str_))
+				and issubclass(where.dtype.type, (str, numpy.str_))
 				):
 			return True
 		elif isinstance(where, (numpy.ndarray, self.__class__)) and issubclass(
-				where.dtype.type, (numpy.object, numpy.object_)
-				) and not issubclass(where.dtype.type, (numpy.bool, numpy.bool_)):
+				where.dtype.type, (object, numpy.object_)
+				) and not issubclass(where.dtype.type, (bool, numpy.bool_)):
 			return len(where) > 0 and all(isinstance(x, str) for x in where)
 		elif isinstance(where, (numpy.ndarray, self.__class__)):
 			return False
@@ -326,10 +326,10 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 
 	def __delitem__(self, where) -> None:
 		if isinstance(where, str):
-			del self.data[where]
+			del self.data[where]  # type: ignore[attr-defined]
 		elif self._isstringslice(where):
 			for x in where:
-				del self.data[x]
+				del self.data[x]  # type: ignore[attr-defined]
 		else:
 			raise TypeError(f"invalid index for removing column from Table: {where}")
 

@@ -2,7 +2,7 @@
 import operator
 
 # 3rd party
-import numpy  # type: ignore
+import numpy
 import pandas  # type: ignore
 import pandas.testing as tm  # type: ignore
 import pytest

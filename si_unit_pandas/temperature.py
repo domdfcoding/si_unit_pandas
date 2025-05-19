@@ -44,7 +44,7 @@ import re
 from typing import Any, Sequence, Type, TypeVar, Union
 
 # 3rd party
-import numpy  # type: ignore
+import numpy
 import pandas  # type: ignore
 from domdf_python_tools import doctools
 from pandas.api.extensions import ExtensionDtype  # type: ignore
@@ -240,7 +240,7 @@ class TemperatureArray(BaseArray):
 			to the values where ``item`` is True.
 		"""
 
-		result = operator.getitem(self.data, item)
+		result = operator.getitem(self.data, item)  # type: ignore[call-overload]
 
 		if result.ndim == 0:
 			return Celsius(result.item())
@@ -340,9 +340,9 @@ def to_temperature(values: _to_temp_types) -> TemperatureArray:
 	"""
 
 	if is_list_like(values):
-		return TemperatureArray(_to_temperature_array(values))
+		return TemperatureArray(_to_temperature_array(values))  # type: ignore[arg-type]
 	else:
-		return TemperatureArray(_to_temperature_array([values]))
+		return TemperatureArray(_to_temperature_array([values]))  # type: ignore[list-item]
 
 
 def _to_temperature_array(
@@ -362,7 +362,7 @@ def _to_temperature_array(
 		values = numpy.asarray(values, dtype=CelsiusType._record_type)
 
 	elif not (isinstance(values, numpy.ndarray) and values.dtype == CelsiusType._record_type):
-		values = _to_int_pairs(values)
+		values = _to_int_pairs(values)  # type: ignore[arg-type]
 
 	return numpy.atleast_1d(numpy.asarray(values, dtype=CelsiusType._record_type))
 
