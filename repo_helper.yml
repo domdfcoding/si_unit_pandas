@@ -11,6 +11,7 @@ use_whey: True
 enable_conda: False
 on_pypi: False
 min_coverage: 60
+standalone_contrib_guide: True
 
 # Versions to run tests for
 python_versions:

@@ -1,5 +1,5 @@
 # this package
-from si_unit_pandas.temperature_array import Celsius, TemperatureArray
+from si_unit_pandas.temperature import Celsius, TemperatureArray
 
 # print(Celsius(24))
 print(repr(Celsius(24)))
