@@ -5,11 +5,11 @@ from typing import Any, Callable, List, Tuple
 # 3rd party
 import numpy
 import numpy.testing as npt
-import pandas  # type: ignore
+import pandas  # type: ignore[import-untyped]
 import pytest
 from hypothesis import example, given
 from hypothesis.strategies import integers, lists, tuples
-from pandas._testing import assert_numpy_array_equal  # type: ignore
+from pandas._testing import assert_numpy_array_equal  # type: ignore[import-untyped]
 
 # this package
 import si_unit_pandas
@@ -112,7 +112,7 @@ def test_comparison_raises(op: Callable):
 @given(
 		tuples(
 				lists(integers(min_value=0, max_value=2**128 - 1)),
-				lists(integers(min_value=0, max_value=2**128 - 1))
+				lists(integers(min_value=0, max_value=2**128 - 1)),
 				).filter(lambda x: len(x[0]) == len(x[1]))
 		)
 @example((1, 1))
@@ -169,7 +169,7 @@ def test_getitem_slice():
 		10,
 		Celsius(10),
 		])
-def test_setitem_scalar(value):
+def test_setitem_scalar(value: Any):
 	ser = si_unit_pandas.TemperatureArray([0, 1, 2])
 	ser[1] = Celsius(value)
 	expected = si_unit_pandas.TemperatureArray([0, 10, 2])

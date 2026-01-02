@@ -45,14 +45,27 @@ Base functionality.
 # stdlib
 from abc import abstractmethod
 from numbers import Real
-from typing import Any, Iterable, List, Optional, Sequence, SupportsFloat, Tuple, Type, TypeVar, Union, overload
+from typing import (
+		Any,
+		Callable,
+		Iterable,
+		List,
+		Optional,
+		Sequence,
+		SupportsFloat,
+		Tuple,
+		Type,
+		TypeVar,
+		Union,
+		overload
+		)
 
 # 3rd party
 import numpy
 from domdf_python_tools.doctools import prettify_docstrings
-from pandas.core.arrays import ExtensionArray  # type: ignore
-from pandas.core.dtypes.base import ExtensionDtype  # type: ignore
-from pandas.core.dtypes.generic import ABCExtensionArray  # type: ignore
+from pandas.core.arrays import ExtensionArray  # type: ignore[import-untyped]
+from pandas.core.dtypes.base import ExtensionDtype  # type: ignore[import-untyped]
+from pandas.core.dtypes.generic import ABCExtensionArray  # type: ignore[import-untyped]
 from typing_extensions import Literal, Protocol
 
 __all__ = ["NumPyBackedExtensionArrayMixin"]
@@ -74,7 +87,12 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 		return self._dtype
 
 	@classmethod
-	def _from_sequence(cls, scalars: Iterable, dtype: Optional[Type[ExtensionDtype]] = None, copy: bool = False):
+	def _from_sequence(
+			cls,
+			scalars: Iterable,
+			dtype: Optional[Type[ExtensionDtype]] = None,
+			copy: bool = False,
+			) -> "NumPyBackedExtensionArrayMixin":
 		"""
 		Construct a new ExtensionArray from a sequence of scalars.
 
@@ -89,7 +107,7 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 		return cls(scalars, dtype=dtype)
 
 	@classmethod
-	def _from_factorized(cls, values: numpy.ndarray, original: ExtensionArray):
+	def _from_factorized(cls, values: numpy.ndarray, original: Any) -> "NumPyBackedExtensionArrayMixin":
 		"""
 		Reconstruct an ExtensionArray after factorization.
 
@@ -109,7 +127,7 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 		Return a tuple of the array dimensions.
 		"""
 
-		return len(self.data),
+		return (len(self.data), )
 
 	def __len__(self) -> int:
 		"""
@@ -118,7 +136,7 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 
 		return len(self.data)
 
-	def setitem(self, indexer, value: Any):
+	def setitem(self, indexer, value: Any) -> "NumPyBackedExtensionArrayMixin":  # noqa: MAN001,PRM002
 		"""
 		Set the 'value' inplace.
 		"""
@@ -137,7 +155,7 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 
 		return self._itemsize * len(self)
 
-	def _formatting_values(self):
+	def _formatting_values(self) -> numpy.ndarray:
 		return numpy.array(self._format_values(), dtype="object")
 
 	def copy(self, deep: bool = False) -> ABCExtensionArray:
@@ -169,13 +187,13 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 
 		return self.data.tolist()
 
-	def argsort(
-			self,
-			ascending: bool = True,
-			kind: Union[Literal["quicksort"], Literal["mergesort"], Literal["heapsort"]] = "quicksort",
-			*args,
-			**kwargs,
-			) -> numpy.ndarray:
+	def argsort(  # noqa: PRM002
+		self,
+		ascending: bool = True,
+		kind: Union[Literal["quicksort"], Literal["mergesort"], Literal["heapsort"]] = "quicksort",
+		*args,
+		**kwargs,
+		) -> numpy.ndarray:
 		r"""
 		Return the indices that would sort this array.
 
@@ -224,7 +242,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 		if copy:
 			data = data.copy()
 
-		new = cls([])  # type: ignore
+		new = cls([])  # type: ignore[operator]
 		new.data = data
 
 		return new
@@ -244,7 +262,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 
 		return self.dtype.na_value
 
-	def take(self, indices, allow_fill: bool = False, fill_value: Any = None):
+	def take(self, indices, allow_fill: bool = False, fill_value: Any = None) -> "BaseArray":  # noqa: MAN001
 		# Can't use pandas' take yet
 		# 1. axis
 		# 2. I don't know how to do the reshaping correctly.
@@ -293,7 +311,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 		"""
 
 		if numpy.isnan(self.na_value):
-			return numpy.isnan(self.data)  # type: ignore[return-value]
+			return numpy.isnan(self.data)
 		else:
 			return self.data == self.na_value
 
@@ -311,7 +329,8 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 				):
 			return True
 		elif isinstance(where, (numpy.ndarray, self.__class__)) and issubclass(
-				where.dtype.type, (object, numpy.object_)
+				where.dtype.type,
+				(object, numpy.object_),
 				) and not issubclass(where.dtype.type, (bool, numpy.bool_)):
 			return len(where) > 0 and all(isinstance(x, str) for x in where)
 		elif isinstance(where, (numpy.ndarray, self.__class__)):
@@ -324,7 +343,7 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 		else:
 			return True
 
-	def __delitem__(self, where) -> None:
+	def __delitem__(self, where) -> None:  # noqa: MAN001
 		if isinstance(where, str):
 			del self.data[where]  # type: ignore[attr-defined]
 		elif self._isstringslice(where):
@@ -335,10 +354,10 @@ class BaseArray(numpy.lib.mixins.NDArrayOperatorsMixin, NumPyBackedExtensionArra
 
 	@property
 	@abstractmethod
-	def _parser(self):
+	def _parser(self) -> Callable[..., Any]:
 		raise NotImplementedError
 
-	def append(self, value) -> None:
+	def append(self, value: Any) -> None:
 		"""
 		Append a value to this BaseArray.
 
@@ -395,7 +414,7 @@ class UserFloat(Real):
 	def __mul__(self: _F, other: float) -> _F:
 		return self.__class__(float(self).__mul__(other))
 
-	def __floordiv__(self: _F, other: float) -> _F:  # type: ignore
+	def __floordiv__(self: _F, other: float) -> _F:
 		return self.__class__(float(self).__floordiv__(other))
 
 	def __truediv__(self: _F, other: float) -> _F:
@@ -405,9 +424,9 @@ class UserFloat(Real):
 		return self.__class__(float(self).__mod__(other))
 
 	def __divmod__(self: _F, other: float) -> Tuple[_F, _F]:
-		return tuple(self.__class__(x) for x in float(self).__divmod__(other))  # type: ignore
+		return tuple(self.__class__(x) for x in float(self).__divmod__(other))  # type: ignore[return-value]
 
-	def __pow__(self: _F, other: float, mod=None) -> _F:
+	def __pow__(self: _F, other: float, mod=None) -> _F:  # noqa: MAN001
 		return self.__class__(float(self).__pow__(other, mod))
 
 	def __radd__(self: _F, other: float) -> _F:
@@ -419,7 +438,7 @@ class UserFloat(Real):
 	def __rmul__(self: _F, other: float) -> _F:
 		return self.__class__(float(self).__rmul__(other))
 
-	def __rfloordiv__(self: _F, other: float) -> _F:  # type: ignore
+	def __rfloordiv__(self: _F, other: float) -> _F:
 		return self.__class__(float(self).__rfloordiv__(other))
 
 	def __rtruediv__(self: _F, other: float) -> _F:
@@ -429,9 +448,9 @@ class UserFloat(Real):
 		return self.__class__(float(self).__rmod__(other))
 
 	def __rdivmod__(self: _F, other: float) -> Tuple[_F, _F]:
-		return tuple(self.__class__(x) for x in float(self).__rdivmod__(other))  # type: ignore
+		return tuple(self.__class__(x) for x in float(self).__rdivmod__(other))  # type: ignore[return-value]
 
-	def __rpow__(self: _F, other: float, mod=None) -> _F:
+	def __rpow__(self: _F, other: float, mod=None) -> _F:  # noqa: MAN001
 		return self.__class__(float(self).__rpow__(other, mod))
 
 	def __getnewargs__(self) -> Tuple[float]:
@@ -503,8 +522,8 @@ class UserFloat(Real):
 	def __abs__(self: _F) -> _F:
 		return self.__class__(float(self).__abs__())
 
-	def __hash__(self) -> int:
-		return float(self).__hash__()
+	# def __hash__(self) -> int:
+	# 	return float(self).__hash__()
 
 	def __repr__(self) -> str:
 		return str(self)

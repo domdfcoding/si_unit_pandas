@@ -3,10 +3,10 @@ import operator
 
 # 3rd party
 import numpy
-import pandas  # type: ignore
-import pandas.testing as tm  # type: ignore
+import pandas  # type: ignore[import-untyped]
+import pandas.testing as tm  # type: ignore[import-untyped]
 import pytest
-from pandas.core.generic import NDFrame  # type: ignore[import]
+from pandas.core.generic import NDFrame  # type: ignore[import-untyped]
 
 # this package
 import si_unit_pandas
@@ -22,7 +22,7 @@ def frame() -> pandas.DataFrame:
 	return pandas.DataFrame({
 			'A': si_unit_pandas.TemperatureArray([0, 1, 2]),
 			'B': [0, 1, 2],
-			'C': si_unit_pandas.TemperatureArray([0, 1, 2])
+			'C': si_unit_pandas.TemperatureArray([0, 1, 2]),
 			})
 
 
@@ -41,7 +41,7 @@ def obj(request, series: pandas.Series, frame: pandas.DataFrame) -> NDFrame:
 		operator.methodcaller("head"),
 		operator.methodcaller("rename", str),
 		])
-def test_works_generic(obj, method: operator.methodcaller):
+def test_works_generic(obj: NDFrame, method: operator.methodcaller):
 	method(obj)
 
 
@@ -107,7 +107,7 @@ def test_reindex(frame: pandas.DataFrame):
 	expected = pandas.DataFrame({
 			'A': si_unit_pandas.TemperatureArray([0, numpy.nan]),
 			'B': [0, numpy.nan],
-			'C': si_unit_pandas.TemperatureArray([0, numpy.nan])
+			'C': si_unit_pandas.TemperatureArray([0, numpy.nan]),
 			},
 								index=[0, 10])
 	tm.assert_frame_equal(result, expected)

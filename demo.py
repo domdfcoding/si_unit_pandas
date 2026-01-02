@@ -22,7 +22,7 @@ for x in arr:
 # print(TemperatureArray([]).na_value)
 
 # 3rd party
-import pandas  # type: ignore
+import pandas  # type: ignore[import-untyped]
 
 df = pandas.DataFrame({"Hour": [1, 2, 3, 4, 5], "Average Temperature": arr})
 print(df)

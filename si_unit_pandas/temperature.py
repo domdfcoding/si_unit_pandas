@@ -41,14 +41,14 @@ Temperature-specific functionality.
 import abc
 import operator
 import re
-from typing import Any, Sequence, Type, TypeVar, Union
+from typing import Any, Callable, List, MutableSequence, Optional, Sequence, Type, TypeVar, Union
 
 # 3rd party
 import numpy
-import pandas  # type: ignore
+import pandas  # type: ignore[import-untyped]
 from domdf_python_tools import doctools
-from pandas.api.extensions import ExtensionDtype  # type: ignore
-from pandas.core.dtypes.inference import is_list_like  # type: ignore
+from pandas.api.extensions import ExtensionDtype  # type: ignore[import-untyped]
+from pandas.core.dtypes.inference import is_list_like  # type: ignore[import-untyped]
 
 # this package
 from si_unit_pandas.base import BaseArray, UserFloat
@@ -60,10 +60,10 @@ __all__ = [
 		"TemperatureArray",
 		"TemperatureBase",
 		"is_temperature_type",
-		"to_temperature"
+		"to_temperature",
 		]
 
-_to_temp_types = Union[float, str, Sequence[Union[float, str]]]
+_to_temp_types = Union[float, str, Sequence[Union[float, str, "Celsius"]]]
 
 # -----------------------------------------------------------------------------
 # Extension Type
@@ -77,7 +77,7 @@ class TemperatureBase(metaclass=abc.ABCMeta):
 
 
 @doctools.append_docstring_from(float)
-class Celsius(UserFloat):
+class Celsius(UserFloat):  # noqa: PRM002
 	"""
 	:class:`float` subclass representing a temperature in Celsius.
 	"""
@@ -140,7 +140,7 @@ class CelsiusType(ExtensionDtype):
 	_record_type: Type = float
 
 	@classmethod
-	def construct_from_string(cls, string):
+	def construct_from_string(cls, string: str) -> "CelsiusType":
 		"""
 		Construct a :class:`~.CelsiusType` from a string.
 
@@ -191,7 +191,7 @@ class CelsiusType(ExtensionDtype):
 _A = TypeVar("_A")
 
 
-class TemperatureArray(BaseArray):
+class TemperatureArray(BaseArray):  # noqa: PRM002
 	"""
 	Holder for Temperatures.
 
@@ -205,7 +205,12 @@ class TemperatureArray(BaseArray):
 	_itemsize: int = 16
 	can_hold_na: bool = True
 
-	def __init__(self, data, dtype=None, copy: bool = False):
+	def __init__(
+			self,
+			data: Union["TemperatureArray", numpy.ndarray, Sequence[Union[str, float, Celsius]], float],
+			dtype: Optional[Type] = None,
+			copy: bool = False,
+			) -> None:
 
 		# The dtype is always CelsiusType
 		data = _to_temperature_array(data)  # TODO: avoid potential copy
@@ -240,14 +245,14 @@ class TemperatureArray(BaseArray):
 			to the values where ``item`` is True.
 		"""
 
-		result = operator.getitem(self.data, item)  # type: ignore[call-overload]
+		result = operator.getitem(self.data, item)  # type: ignore[misc]
 
 		if result.ndim == 0:
 			return Celsius(result.item())
 		else:
 			return type(self)(result)
 
-	def _format_values(self):
+	def _format_values(self) -> List[Celsius]:
 		formatted = []
 
 		# TODO: perf
@@ -258,7 +263,7 @@ class TemperatureArray(BaseArray):
 		return formatted
 
 	@property
-	def _parser(self):
+	def _parser(self) -> Callable[[_to_temp_types], TemperatureArray]:
 		return to_temperature
 
 	def append(self, value: _to_temp_types) -> None:
@@ -270,7 +275,7 @@ class TemperatureArray(BaseArray):
 
 		super().append(value)
 
-	def astype(self, dtype, copy: bool = True):
+	def astype(self, dtype: Type, copy: bool = True):  # noqa: MAN002  # TODO
 		"""
 		Returns the array with its values as the given dtype.
 
@@ -317,7 +322,7 @@ class TemperatureArray(BaseArray):
 		return mask
 
 
-def is_temperature_type(obj) -> bool:
+def is_temperature_type(obj: Any) -> bool:
 	"""
 	Returns whether ``obj`` is a temperature type.
 
@@ -340,13 +345,13 @@ def to_temperature(values: _to_temp_types) -> TemperatureArray:
 	"""
 
 	if is_list_like(values):
-		return TemperatureArray(_to_temperature_array(values))  # type: ignore[arg-type]
+		return TemperatureArray(_to_temperature_array(values))
 	else:
 		return TemperatureArray(_to_temperature_array([values]))  # type: ignore[list-item]
 
 
 def _to_temperature_array(
-		values: Union[TemperatureArray, numpy.ndarray, Sequence[Union[str, float]]]
+		values: Union[TemperatureArray, numpy.ndarray, Sequence[Union[str, float, Celsius]], float],
 		) -> numpy.ndarray:  # : Union[TemperatureArray, np.ndarray]
 	"""
 	Convert the values to a temperature array.
@@ -367,7 +372,7 @@ def _to_temperature_array(
 	return numpy.atleast_1d(numpy.asarray(values, dtype=CelsiusType._record_type))
 
 
-def _to_int_pairs(values: _to_temp_types):
+def _to_int_pairs(values: _to_temp_types) -> Union[List[float], float]:
 
 	if isinstance(values, (str, int, float, Celsius)):
 		if isinstance(values, Fahrenheit):
@@ -379,14 +384,14 @@ def _to_int_pairs(values: _to_temp_types):
 		if values.ndim != 2:
 			raise ValueError("'values' should be a 2-D when passing a NumPy array.")
 
+		return values
+
 	else:
-		new_values = []
+		new_values: MutableSequence[Union[float, Celsius]] = []
 		for v in values:
 			if isinstance(v, Fahrenheit):
 				new_values.append((v - 32) * (5 / 9))
 			else:
 				new_values.append(float(v))
 
-		values = [float(v) for v in new_values]
-
-	return values
+		return [float(v) for v in new_values]

@@ -1,7 +1,7 @@
 # 3rd party
-import pandas  # type: ignore
+import pandas  # type: ignore[import-untyped]
 from coincidence import check_file_regression
-from pandas._testing import assert_frame_equal  # type: ignore
+from pandas._testing import assert_frame_equal  # type: ignore[import-untyped]
 from pytest_regressions.file_regression import FileRegressionFixture
 
 # this package
