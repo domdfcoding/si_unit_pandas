@@ -11,8 +11,6 @@ enable_conda: False
 on_pypi: False
 min_coverage: 60
 
-python_deploy_version: 3.6
-
 # Versions to run tests for
 python_versions:
   - '3.7'
