@@ -7,6 +7,7 @@ username: "domdfcoding"
 license: 'BSD-3-Clause'
 short_desc: 'Custom Pandas dtypes for values with SI units.'
 
+use_whey: True
 enable_conda: False
 on_pypi: False
 min_coverage: 60
