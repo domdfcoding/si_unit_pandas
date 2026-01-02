@@ -263,7 +263,7 @@ class TemperatureArray(BaseArray):  # noqa: PRM002
 		return formatted
 
 	@property
-	def _parser(self) -> Callable[[_to_temp_types], TemperatureArray]:
+	def _parser(self) -> Callable[[_to_temp_types], "TemperatureArray"]:
 		return to_temperature
 
 	def append(self, value: _to_temp_types) -> None:
