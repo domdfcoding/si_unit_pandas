@@ -37,10 +37,13 @@ def obj(request, series: pandas.Series, frame: pandas.DataFrame) -> NDFrame:
 # -----
 # Tests
 # -----
-@pytest.mark.parametrize("method", [
-		operator.methodcaller("head"),
-		operator.methodcaller("rename", str),
-		])
+@pytest.mark.parametrize(
+		"method",
+		[
+				operator.methodcaller("head"),
+				operator.methodcaller("rename", str),
+				],
+		)
 def test_works_generic(obj: NDFrame, method: operator.methodcaller):
 	method(obj)
 
@@ -104,12 +107,14 @@ def test_loc_frame(frame: pandas.DataFrame):
 
 def test_reindex(frame: pandas.DataFrame):
 	result = frame.reindex([0, 10])
-	expected = pandas.DataFrame({
-			'A': si_unit_pandas.TemperatureArray([0, numpy.nan]),
-			'B': [0, numpy.nan],
-			'C': si_unit_pandas.TemperatureArray([0, numpy.nan]),
-			},
-								index=[0, 10])
+	expected = pandas.DataFrame(
+			{
+					'A': si_unit_pandas.TemperatureArray([0, numpy.nan]),
+					'B': [0, numpy.nan],
+					'C': si_unit_pandas.TemperatureArray([0, numpy.nan]),
+					},
+			index=[0, 10],
+			)
 	tm.assert_frame_equal(result, expected)
 
 
