@@ -193,7 +193,7 @@ class NumPyBackedExtensionArrayMixin(ExtensionArray):
 		kind: Union[Literal["quicksort"], Literal["mergesort"], Literal["heapsort"]] = "quicksort",
 		*args,
 		**kwargs,
-		) -> numpy.ndarray:
+	) -> numpy.ndarray:
 		r"""
 		Return the indices that would sort this array.
 

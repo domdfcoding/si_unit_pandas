@@ -78,7 +78,7 @@ def test_temperature_array(seq: Sequence):
 @pytest.mark.parametrize("seq", [*_non_empty_lists, *_non_empty_tuples, *_non_empty_arrays])
 def test_temperature_array_from_factorized(seq: Sequence):
 	assert numpy.all(
-			TemperatureArray._from_factorized(numpy.array(seq), None) == TemperatureArray(numpy.array(list(seq)))
+			TemperatureArray._from_factorized(numpy.array(seq), None) == TemperatureArray(numpy.array(list(seq))),
 			)
 
 
@@ -102,7 +102,8 @@ def test_temperature_array_from_factorized_empty():
 
 
 @pytest.mark.parametrize(
-		"seq", [
+		"seq",
+		[
 				[],
 				(),
 				{},
@@ -111,7 +112,7 @@ def test_temperature_array_from_factorized_empty():
 				*_non_empty_lists,
 				*_non_empty_tuples,
 				*_non_empty_arrays,
-				]
+				],
 		)
 def test_dtype(seq: Sequence):
 	assert isinstance(TemperatureArray(seq).dtype, CelsiusType)

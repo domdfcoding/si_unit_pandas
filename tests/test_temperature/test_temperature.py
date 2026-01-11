@@ -94,12 +94,15 @@ def test_equality():
 	assert result is False
 
 
-@pytest.mark.parametrize("op", [
-		operator.lt,
-		operator.le,
-		operator.ge,
-		operator.gt,
-		])
+@pytest.mark.parametrize(
+		"op",
+		[
+				operator.lt,
+				operator.le,
+				operator.ge,
+				operator.gt,
+				],
+		)
 def test_comparison_raises(op: Callable):
 	arr = si_unit_pandas.TemperatureArray([0, 1, 2])
 	with pytest.raises(TypeError):
@@ -113,7 +116,7 @@ def test_comparison_raises(op: Callable):
 		tuples(
 				lists(integers(min_value=0, max_value=2**128 - 1)),
 				lists(integers(min_value=0, max_value=2**128 - 1)),
-				).filter(lambda x: len(x[0]) == len(x[1]))
+				).filter(lambda x: len(x[0]) == len(x[1])),
 		)
 @example((1, 1))
 @example((0, 0))
@@ -163,12 +166,15 @@ def test_getitem_slice():
 	assert result.equals(expected)
 
 
-@pytest.mark.parametrize("value", [
-		10.0,
-		"10.0",
-		10,
-		Celsius(10),
-		])
+@pytest.mark.parametrize(
+		"value",
+		[
+				10.0,
+				"10.0",
+				10,
+				Celsius(10),
+				],
+		)
 def test_setitem_scalar(value: Any):
 	ser = si_unit_pandas.TemperatureArray([0, 1, 2])
 	ser[1] = Celsius(value)
