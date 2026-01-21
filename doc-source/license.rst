@@ -7,4 +7,4 @@ License
 .. license-info:: BSD-3-Clause
 
 .. license::
-	:py: si_unit_pandas
+	:py: si-unit-pandas
